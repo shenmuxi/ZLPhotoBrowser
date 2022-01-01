@@ -389,35 +389,7 @@ public class ZLPhotoPreviewSheet: UIView {
     }
     
     @objc func cameraBtnClick() {
-        let config = ZLPhotoConfiguration.default()
-        if config.useCustomCamera {
-            let camera = ZLCustomCamera()
-            camera.takeDoneBlock = { [weak self] (image, videoUrl) in
-                self?.save(image: image, videoUrl: videoUrl)
-            }
-            self.sender?.showDetailViewController(camera, sender: nil)
-        } else {
-            if UIImagePickerController.isSourceTypeAvailable(.camera) {
-                let picker = UIImagePickerController()
-                picker.delegate = self
-                picker.allowsEditing = false
-                picker.videoQuality = .typeHigh
-                picker.sourceType = .camera
-                picker.cameraFlashMode = config.cameraConfiguration.flashMode.imagePickerFlashMode
-                var mediaTypes = [String]()
-                if config.allowTakePhoto {
-                    mediaTypes.append("public.image")
-                }
-                if config.allowRecordVideo {
-                    mediaTypes.append("public.movie")
-                }
-                picker.mediaTypes = mediaTypes
-                picker.videoMaximumDuration = TimeInterval(config.maxRecordDuration)
-                self.sender?.showDetailViewController(picker, sender: nil)
-            } else {
-                showAlertView(localLanguageTextValue(.cameraUnavailable), self.sender)
-            }
-        }
+
     }
     
     @objc func photoLibraryBtnClick() {

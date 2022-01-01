@@ -523,14 +523,9 @@ class ZLClipImageViewController: UIViewController {
         let image = clipImage()
         dismissAnimateFromRect = clipBoxFrame
         dismissAnimateImage = image.clipImage
-        if presentingViewController is ZLCustomCamera {
-            dismiss(animated: animate) {
-                self.clipDoneBlock?(self.angle, image.editRect, self.selectedRatio)
-            }
-        } else {
-            clipDoneBlock?(angle, image.editRect, selectedRatio)
-            dismiss(animated: animate, completion: nil)
-        }
+        
+        clipDoneBlock?(angle, image.editRect, selectedRatio)
+        dismiss(animated: animate, completion: nil)
     }
     
     @objc func rotateBtnClick() {

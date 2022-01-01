@@ -296,7 +296,6 @@ class ZLThumbnailViewController: UIViewController {
         }
         self.view.addSubview(self.collectionView)
         
-        ZLCameraCell.zl_register(self.collectionView)
         ZLThumbnailPhotoCell.zl_register(self.collectionView)
         ZLAddPhotoCell.zl_register(self.collectionView)
         
@@ -708,38 +707,6 @@ class ZLThumbnailViewController: UIViewController {
         self.collectionView.scrollToItem(at: IndexPath(row: index, section: 0), at: .centeredVertically, animated: false)
     }
     
-    func showCamera() {
-        let config = ZLPhotoConfiguration.default()
-        if config.useCustomCamera {
-            let camera = ZLCustomCamera()
-            camera.takeDoneBlock = { [weak self] (image, videoUrl) in
-                self?.save(image: image, videoUrl: videoUrl)
-            }
-            self.showDetailViewController(camera, sender: nil)
-        } else {
-            if UIImagePickerController.isSourceTypeAvailable(.camera) {
-                let picker = UIImagePickerController()
-                picker.delegate = self
-                picker.allowsEditing = false
-                picker.videoQuality = .typeHigh
-                picker.sourceType = .camera
-                picker.cameraFlashMode = config.cameraConfiguration.flashMode.imagePickerFlashMode
-                var mediaTypes = [String]()
-                if config.allowTakePhoto {
-                    mediaTypes.append("public.image")
-                }
-                if config.allowRecordVideo {
-                    mediaTypes.append("public.movie")
-                }
-                picker.mediaTypes = mediaTypes
-                picker.videoMaximumDuration = TimeInterval(config.maxRecordDuration)
-                self.showDetailViewController(picker, sender: nil)
-            } else {
-                showAlertView(localLanguageTextValue(.cameraUnavailable), self)
-            }
-        }
-    }
-    
     func save(image: UIImage?, videoUrl: URL?) {
         let hud = ZLProgressHUD(style: ZLPhotoConfiguration.default().hudStyle)
         if let image = image {
@@ -929,14 +896,7 @@ extension ZLThumbnailViewController: UICollectionViewDataSource, UICollectionVie
         let config = ZLPhotoConfiguration.default()
         if self.showCameraCell && ((config.sortAscending && indexPath.row == self.arrDataSources.count) || (!config.sortAscending && indexPath.row == 0)) {
             // camera cell
-            
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ZLCameraCell.zl_identifier(), for: indexPath) as! ZLCameraCell
-            
-            if config.showCaptureImageOnTakePhotoBtn {
-                cell.startCapture()
-            }
-            
-            return cell
+            return UICollectionViewCell()
         }
         
         if #available(iOS 14, *) {
@@ -1008,10 +968,6 @@ extension ZLThumbnailViewController: UICollectionViewDataSource, UICollectionVie
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let c = collectionView.cellForItem(at: indexPath)
-        if c is ZLCameraCell {
-            self.showCamera()
-            return
-        }
         if #available(iOS 14, *) {
             if c is ZLAddPhotoCell {
                 PHPhotoLibrary.shared().presentLimitedLibraryPicker(from: self)

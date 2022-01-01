@@ -395,29 +395,3 @@ public class ZLPhotoManager: NSObject {
         }
     }
 }
-
-
-/// Authority related.
-extension ZLPhotoManager {
-    
-    @objc public class func hasPhotoLibratyAuthority() -> Bool {
-        return PHPhotoLibrary.authorizationStatus() == .authorized
-    }
-    
-    @objc public class func hasCameraAuthority() -> Bool {
-        let status = AVCaptureDevice.authorizationStatus(for: .video)
-        if status == .restricted || status == .denied {
-            return false
-        }
-        return true
-    }
-    
-    @objc public class func hasMicrophoneAuthority() -> Bool {
-        let status = AVCaptureDevice.authorizationStatus(for: .audio)
-        if status == .restricted || status == .denied {
-            return false
-        }
-        return true
-    }
-    
-}
